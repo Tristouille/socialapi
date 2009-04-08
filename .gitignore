@@ -1,0 +1,8 @@
+bin-debug/*
+.settings/*
+.project*
+.flexProperties*
+.actionScriptProperties*
+html-template/*
+bin-release/*
+

@@ -50,6 +50,7 @@
            for(var i:int = 0; i < event.responseArray.length; i++)
            {
                var statusData:StatusData = event.responseArray[i];
+               idLblUser.text = statusData.text; 
                var obj:Object = {};
                obj.text =  statusData.text;
                obj.from =  statusData.user.screenName;
