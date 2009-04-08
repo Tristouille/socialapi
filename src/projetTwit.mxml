@@ -5,6 +5,7 @@
 
 <mx:Script>
 	<![CDATA[
+		import com.swfjunkie.tweetr.data.objects.UserData;
 		import com.swfjunkie.tweetr.data.objects.StatusData;
 		import com.swfjunkie.tweetr.events.TweetEvent;
 		import com.swfjunkie.tweetr.Tweetr;
@@ -32,7 +33,7 @@
             	twit.addEventListener(TweetEvent.COMPLETE, handleLoad);
             	twit.addEventListener(TweetEvent.FAILED, handleFail);
             	
-            	// now let's retrieve the public timeline
+            	// now let's retrieve the followers
             	twit.getFollowers(usr,1);
        }
 		
@@ -44,16 +45,16 @@
        */
        private function handleLoad(event:TweetEvent):void
        {
+           idLblUser.text = "coucou"; 
            // we'll create a simple array with a object
            // containing the tweet and who sent it.
            var arr:Array = [];
            for(var i:int = 0; i < event.responseArray.length; i++)
            {
-               var statusData:StatusData = event.responseArray[i];
-               idLblUser.text = statusData.text; 
+               var userData:UserData = event.responseArray[i];
                var obj:Object = {};
-               obj.text =  statusData.text;
-               obj.from =  statusData.user.screenName;
+			   obj.screen = userData.screenName;
+			   obj.Name = userData.name;
                arr.push(obj);
            }
            // then pass it to the datagrid
@@ -68,21 +69,21 @@
         */ 
         private function handleFail(event:TweetEvent):void
         {
+            idLblUser.text = "bouh"; 
             Alert.show(event.info,"Epic Fail");
         }
 				
 	]]>
 </mx:Script>	
 	<mx:Button x="98" y="147" label="C'est ici qu'il faut cliquer" id="idButt" click="connect()"/>
-	<mx:Label x="98" y="79" text="User Name" width="122" id="idLabel"/>
 	<mx:TextInput x="98" y="105" id="idTxt" width="163"/>
-	<mx:Label x="98" y="294" text="Label" width="163" id="idLblUser"/>
+	<mx:Label x="98" y="294" text="Ici" width="163" id="idLblUser"/>
 	
-    <mx:Panel title="Public Timeline " width="439" x="306" height="293" y="47">
+    <mx:Panel title="Followers" width="439" x="306" height="293" y="47">
 	<mx:DataGrid id="datagrid" width="100%" minHeight="400">
 		<mx:columns>
-			<mx:DataGridColumn headerText="Tweet" dataField="text"/>
-			<mx:DataGridColumn headerText="@user" width="150" dataField="from"/>
+			<mx:DataGridColumn headerText="Les nom" dataField="Name"/>
+			<mx:DataGridColumn headerText="Les screen noms" width="150" dataField="screen"/>
 		</mx:columns>
 	</mx:DataGrid>
 	</mx:Panel>   
