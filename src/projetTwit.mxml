@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute">
+	
+	
+
+<mx:Script>
+	<![CDATA[
+		import com.swfjunkie.tweetr.data.objects.StatusData;
+		import com.swfjunkie.tweetr.events.TweetEvent;
+		import com.swfjunkie.tweetr.Tweetr;
+		import mx.controls.Alert;
+		
+		
+		public var twit:Tweetr;
+		public var usr:String; 
+		
+		
+		
+		
+		public function connect():void
+		{
+        	  	 usr=idTxt.text;
+				// create a new tweetr instance
+            	twit = new Tweetr(usr, null);
+            	
+            	
+            	// since we are using it on the web, set 
+            	// the serviceHost to the tweetr php-proxy
+            	twit.serviceHost = "labs.swfjunkie.com/tweetr/proxy";
+                
+                // add event listeners
+            	twit.addEventListener(TweetEvent.COMPLETE, handleLoad);
+            	twit.addEventListener(TweetEvent.FAILED, handleFail);
+            	
+            	// now let's retrieve the public timeline
+            	twit.getFollowers(usr,1);
+       }
+		
+		
+       /**
+       * @private
+       * If everything goes well, we get an event with an
+       * array full of StatusData Objects
+       */
+       private function handleLoad(event:TweetEvent):void
+       {
+           // we'll create a simple array with a object
+           // containing the tweet and who sent it.
+           var arr:Array = [];
+           for(var i:int = 0; i < event.responseArray.length; i++)
+           {
+               var statusData:StatusData = event.responseArray[i];
+               var obj:Object = {};
+               obj.text =  statusData.text;
+               obj.from =  statusData.user.screenName;
+               arr.push(obj);
+           }
+           // then pass it to the datagrid
+           datagrid.dataProvider = arr;
+       }
+        	
+        	
+		
+		/**
+        * @private
+        * If something go wrong, show an alert window with the info
+        */ 
+        private function handleFail(event:TweetEvent):void
+        {
+            Alert.show(event.info,"Epic Fail");
+        }
+				
+	]]>
+</mx:Script>	
+	<mx:Button x="98" y="147" label="C'est ici qu'il faut cliquer" id="idButt" click="connect()"/>
+	<mx:Label x="98" y="79" text="User Name" width="122" id="idLabel"/>
+	<mx:TextInput x="98" y="105" id="idTxt" width="163"/>
+	<mx:Label x="98" y="294" text="Label" width="163" id="idLblUser"/>
+	
+    <mx:Panel title="Public Timeline " width="439" x="306" height="293" y="47">
+	<mx:DataGrid id="datagrid" width="100%" minHeight="400">
+		<mx:columns>
+			<mx:DataGridColumn headerText="Tweet" dataField="text"/>
+			<mx:DataGridColumn headerText="@user" width="150" dataField="from"/>
+		</mx:columns>
+	</mx:DataGrid>
+	</mx:Panel>   
+		
+	
+</mx:Application>
